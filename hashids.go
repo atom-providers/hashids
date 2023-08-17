@@ -3,9 +3,15 @@ package hashids
 import (
 	"github.com/rogeecn/atom/container"
 	"github.com/rogeecn/atom/utils/opt"
+	"github.com/samber/lo"
 
 	"github.com/speps/go-hashids/v2"
 )
+
+type HashID struct {
+	config   *Config
+	instance *hashids.HashID
+}
 
 func Provide(opts ...opt.Option) error {
 	o := opt.New(opts...)
@@ -13,7 +19,7 @@ func Provide(opts ...opt.Option) error {
 	if err := o.UnmarshalConfig(&config); err != nil {
 		return err
 	}
-	return container.Container.Provide(func() (*hashids.HashID, error) {
+	return container.Container.Provide(func() (*HashID, error) {
 		data := hashids.NewData()
 		data.MinLength = int(config.MinLength)
 		if data.MinLength == 0 {
@@ -29,6 +35,37 @@ func Provide(opts ...opt.Option) error {
 			data.Alphabet = config.Alphabet
 		}
 
-		return hashids.NewWithData(data)
+		hashid, err := hashids.NewWithData(data)
+		if err != nil {
+			return nil, err
+		}
+
+		return &HashID{
+			instance: hashid,
+			config:   &config,
+		}, nil
 	}, o.DiOptions()...)
+}
+
+func (h *HashID) EncodeInt64(id int64) (string, error) {
+	return h.instance.EncodeInt64([]int64{id})
+}
+
+func (h *HashID) MustEncodeInt64(id int64) string {
+	return lo.Must1(h.instance.EncodeInt64([]int64{id}))
+}
+
+func (h *HashID) EncodeWithSalt(salt string, id int64) (string, error) {
+	ins, err := hashids.NewWithData(&hashids.HashIDData{
+		Salt:      salt,
+		MinLength: int(h.config.MinLength),
+	})
+	if err != nil {
+		return "", err
+	}
+	return ins.EncodeInt64([]int64{id})
+}
+
+func (h *HashID) MustEncodeWithSalt(salt string, id int64) string {
+	return lo.Must1(h.EncodeWithSalt(salt, id))
 }

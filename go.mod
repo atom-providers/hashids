@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/rogeecn/atom v1.0.6
+	github.com/samber/lo v1.38.1
 	github.com/speps/go-hashids/v2 v2.0.1
 )
 
@@ -20,6 +21,7 @@ require (
 	github.com/spf13/viper v1.16.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	go.uber.org/dig v1.17.0 // indirect
+	golang.org/x/exp v0.0.0-20230728194245-b0cb94b80691 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
