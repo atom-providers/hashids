@@ -7,6 +7,8 @@ import (
 
 const DefaultPrefix = "HashIDs"
 
+const DefaultAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
 func DefaultProvider() container.ProviderContainer {
 	return container.ProviderContainer{
 		Provider: Provide,
